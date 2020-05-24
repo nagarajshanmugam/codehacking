@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 
 use App\User;
 use App\Role;
+use App\Photo;
 
 class AdminController extends Controller
 {
@@ -48,7 +49,23 @@ class AdminController extends Controller
     public function store(UserRequest $request)
     {
         //
-		 User::create($request->all());
+		// User::create($request->all());
+		$input = $request->all();
+		//dd($input);
+		if($file = $request->file('photo_id')){
+		
+		//return ('photo exists');
+		$name = time().$file->getClientOriginalName();
+		
+		$file->move('images',$name);
+		
+		$photo = Photo::create(['file'=>$name]);
+		
+		$input['photo_id'] = $photo->id;
+		
+		}
+		
+		User::create($input);
 		
 		return redirect('/admin');
     }
