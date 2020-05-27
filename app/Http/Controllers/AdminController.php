@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests\UserRequest;
 
+use App\Http\Requests\UsersEditRequest;
+
 use App\User;
 use App\Role;
 use App\Photo;
@@ -50,7 +52,16 @@ class AdminController extends Controller
     {
         //
 		// User::create($request->all());
+		if(trim($request->password) == ''){
+		
+		$input = $request->except('password');
+		
+		}else{
+		
 		$input = $request->all();
+		
+		}
+		//$input = $request->all();
 		//dd($input);
 		if($file = $request->file('photo_id')){
 		
@@ -102,9 +113,35 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UsersEditRequest $request, $id)
     {
         //
+		//return $request->all();
+		
+		$user = User::findOrFail($id);
+		if(trim($request->password) == ''){
+		
+		$input = $request->except('password');
+		
+		}else{
+		
+		$input = $request->all();
+		
+		}
+		
+		if($file=$request->file('photo_id')){
+		
+		$name = time().$file->getClientOriginalName();
+		
+		$file ->move('images', $name);
+		
+		$photo = Photo::create(['file'=>$name]);
+		
+		$input['photo_id'] = $photo->id;
+		}
+		
+		$user->update($input);
+		return redirect('/admin');
     }
 
     /**

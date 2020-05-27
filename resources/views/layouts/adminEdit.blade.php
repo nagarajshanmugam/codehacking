@@ -1,6 +1,13 @@
-{!!Form::model($user,['method'=>'PATCH', 'action'=>['AdminController@store',$user->id]]) !!}
+{!!Form::model($user,['method'=>'PATCH', 'action'=>['AdminController@update',$user->id], 'files'=>true]) !!}
 
 <h1>Edit User</h1>
+<div class="col-sm-3">
+
+<img  class="img-responsive img-circle" src="{{$user->photo ? $user->photo->file : "/images/noUser.png"}}" height="50" alt="images" />
+
+
+</div>
+<div class="col-sm-9">
 <div class="form-group">
 {!!Form::label('name', 'User Name :') !!}
 {!!Form::text('name',null,['class'=>'form-control']) !!}
@@ -21,11 +28,15 @@
 
 <div class="form-group">
 {!!Form::label('is_active', 'Is Active :') !!}
-{!!Form::select('is_active',array('1'=>'Active', '0'=>'Not Active'),['class'=>'form-control']) !!}
+{!!Form::select('is_active',array('1'=>'Active', '0'=>'Not Active'),null,['class'=>'form-control']) !!}
 
 </div><br/>
 
+<div class="form-group">
+{!!Form::label('photo_id', 'User Image :') !!}
+{!!Form::file('photo_id',null,['class'=>'form-control']) !!}
 
+</div><br/>
 
 
 <div class="form-group">
@@ -34,19 +45,12 @@
 
 </div><br/>
 
+</div>
 
 <div class="form-group">
 {!!Form::submit('Create User') !!}
 </div>
 
-@if(count($errors))
-<div class="alert alert-danger">
-<ui>
-@foreach($errors->all() as $error)
-<li>{{$error}}</li>
-@endforeach
-</ui>
-</div>
-@endif
+@include('includes.form_error')
 
 {!!Form::close() !!}
